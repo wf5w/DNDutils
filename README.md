@@ -83,7 +83,7 @@ This is why I decided to do all of this locally.
 
 ## making aliases to help you along the way
 
-I am currently playing a druid of level 2, so after installing these dndutils on my system, and putting them in my PATH:
+I am currently playing a druid of level 4, (spells level 2), so after installing these dndutils on my system, and putting them in my PATH:
 
 I created the following aliases, which I use, you can do similar:
 
