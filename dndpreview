@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+col=$(stty size < /dev/tty | cut -d' ' -f2)
+col=$(($col/2 - 5))
+
+if [ ! -z ${1} ]; then
+  if [ ! -d ${1} ]; then
+    echo ${1}
+    echo " "
+    cat "${1}" | sed -n '1, /Range:/p'
+    cat "${1}" | sed -n '/Components:/, /Duration:/p' | sed '$d' | tr '\n' ' ' | fmt --width $col 
+    cat "${1}" | sed -n '/Duration:/p'
+    echo " "
+    cat "${1}" | sed -n '/Duration:/, //p' | sed '1d' | sed '$d' | fmt --width $col | iconv -t ASCII//IGNORE 2> /dev/null
+    echo " "
+    cat "${1}" | sed -n '$p'
+  else
+    echo "This is a directory"
+  fi
+fi
+

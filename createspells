@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# this script uses pup (found on github)
+which pup >/dev/null
+if [ $? -ne 0 ]; then
+  echo you need pup, please install before running this script
+  echo 'https://github.com/ericchiang/pup'
+  exit 1
+fi
+
+DND_DIRECTORY="${DND_DIRECTORY:-"${HOME}/Documents/dnd"}"
+
+mkdir -p ${DND_DIRECTORY}
+cd ${DND_DIRECTORY}
+
+url='http://dnd5e.wikidot.com'
+wget -qO main.html.text $url
+
+mkdir -p rawspells
+mkdir -p spells
+rm -fR spells/byclass/*
+
+# get all spells for everyone
+#
+for spurl in $(pup 'div.col-sm-2:nth-child(2) a attr{href}' -f main.html.text | grep '/spells:'); do 
+  # echo "${spurl}"
+  classname=$(echo $spurl | sed 's!/spells:!!')
+  wget -qO "${classname}.html" "${url}${spurl}"
+  n=$(pup 'li em' -f "${classname}.html" | grep -v '<' | cut -b2 | wc -l)
+  if grep -q "Cantrip" ${classname}.html; then
+    vno=0
+  else
+    vno=1
+  fi
+
+  for i in $(seq $n); do
+    spells=$(pup "table.wiki-content-table" -f ${classname}.html | pup "table:nth-child($i) a attr{href}")
+    for s in $spells; do 
+      echo "${classname} : ${vno} : ${s}"; 
+      if [ ! -f rawspells/${s} ]; then
+        curl -s -o rawspells/${s} "${url}${s}"
+      fi
+
+      cat rawspells/${s} | pup "div#page-content" | html2text -nometa -ascii > spells/${s}
+      mkdir -p spells/byclass/${classname}/${vno}
+      ln -srf spells/${s} -t spells/byclass/${classname}/${vno}
+    done 
+    vno=$(( ${vno} + 1))
+  done
+done
+

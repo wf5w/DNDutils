@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+if [ -z $1 ]; then
+  echo "$0 [ -l | classname maxlevel ]"
+  exit 0
+fi
+
+DND_DIRECTORY="${DND_DIRECTORY:-"${HOME}/Documents/dnd"}"
+
+if [ "${1}" = "-l" ]; then
+  ls -1 ${DND_DIRECTORY}/spells/byclass
+  exit 0
+fi
+
+if [ -z $2 ]; then
+  echo you must give a max level
+  exit 1
+fi
+
+cd ${DND_DIRECTORY}/spells/byclass/$1
+
+find . -type l | sort -n | grep "\./[0-${2}]" | xargs grep -i -l 'Casting Time: .*bonus action' | fzf --preview='$HOME/bin/dndpreview {}' --bind='alt-up:preview-page-up,alt-down:preview-page-down'
