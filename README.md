@@ -74,6 +74,19 @@ usage: dndbonus [ -l | classname maxlevel ]
 
 `dndbonus druid 2` -> list all the bonus actions for all spells in the druid class up through level 2
 
+## dndall
+
+dndall searches all spells no matter what class and what level
+
+this is to help out the DM, more than anything else
+and  will search on up to 2 regular expressions
+
+so, you can do something like: 
+
+`dndall cleric flame`
+
+which will give you every spell that first has cleric in it, then within that by flame
+
 # Final thoughts
 
 I started out by using the wikidot website, on my cellphone. It was ok, but it was slow to use because of my cellphone coverage, and when I went back and forth between spells, or searching for spells, it was slow and cumbersome.
