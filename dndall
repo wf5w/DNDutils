@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# this file, searches all spells no matter what class and what level
+# this is to help out the DM, more than anything else
+# this will search on up to 2 regular expressions
+# so, you can do something like: dndall cleric flame. That will give you every spell that has cleric in it, then by flame
+
+
+DND_DIRECTORY="${DND_DIRECTORY:-"${HOME}/Documents/dnd"}"
+
+if [ -z "${1}" ]; then
+  echo you must have a regexp to search on
+  exit 2
+fi
+
+cd ${DND_DIRECTORY}/spells/
+
+find . -type f | sort -n | xargs grep -li "${1}" | xargs grep -li "${2}" | fzf --preview='$HOME/bin/dndpreview {}' --bind='alt-up:preview-page-up,alt-down:preview-page-down'
